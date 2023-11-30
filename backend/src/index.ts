@@ -16,6 +16,7 @@ const allowedOrigins = ["http://localhost:3000"];
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
 };
+
 app.use(cors(options));
 
 const port = process.env.PORT || 3001;
@@ -24,13 +25,11 @@ app.use(`/govaa`, govaaRoute);
 app.use(`/auth`, authRoute);
 app.use(`/agency`, agencyRoute);
 
-app.listen(port, () => {
-  console.clear();
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
-
 AppDataSource.initialize()
   .then(() => {
-    // here you can start to work with your database
+    app.listen(port, () => {
+      console.clear();
+      console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+    });
   })
   .catch((error) => console.log(error));

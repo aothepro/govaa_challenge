@@ -1,0 +1,50 @@
+version: "3.7"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    command: npm run start
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_HOST: "database"
+      DATABASE_PORT: "5432"
+      DATABASE_USERNAME: "ssguser"
+      DATABASE_PASSWORD: "passwordssg"
+      DATABASE_DATABASE: "surveysg"
+    depends_on:
+      - database
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    volumes:
+      - "./:/app"
+      - "/app/node_modules"
+    ports:
+      - 3000:80
+    depends_on:
+      - backend
+
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ssguser
+      POSTGRES_PASSWORD: passwordssg
+      POSTGRES_DB: surveysg
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
